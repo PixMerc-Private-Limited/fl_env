@@ -1,0 +1,139 @@
+name: PR
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test-dart:
+    name: Lint + Dart Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter-version: ['3.16.x', 'latest']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter-version }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage
+        if: matrix.flutter-version == 'latest'
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+          flags: dart
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  test-cli:
+    name: CLI Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install CLI dependencies
+        working-directory: tool/fl_env_cli
+        run: dart pub get
+
+      - name: Analyze CLI
+        working-directory: tool/fl_env_cli
+        run: dart analyze --fatal-infos
+
+      - name: Run CLI tests
+        working-directory: tool/fl_env_cli
+        run: dart test
+
+  test-android:
+    name: Android Build Check
+    runs-on: ubuntu-latest
+    needs: [lint-and-test-dart, test-cli]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate test key fixtures
+        env:
+          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY_TEST }}
+        run: |
+          dart pub global activate --source path tool/fl_env_cli
+          dart pub global run fl_env_cli build --project-dir example/
+        continue-on-error: true
+
+      - name: Build example APK (debug)
+        working-directory: example
+        run: flutter build apk --debug
+
+  test-ios:
+    name: iOS Build Check
+    runs-on: macos-latest
+    needs: [lint-and-test-dart, test-cli]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate test key fixtures
+        env:
+          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY_TEST }}
+        run: |
+          dart pub global activate --source path tool/fl_env_cli
+          dart pub global run fl_env_cli build --project-dir example/
+        continue-on-error: true
+
+      - name: Install CocoaPods
+        working-directory: example/ios
+        run: pod install
+
+      - name: Build example iOS (debug, no codesign)
+        working-directory: example
+        run: flutter build ios --debug --no-codesign
+
+  pr-summary:
+    name: PR Summary
+    runs-on: ubuntu-latest
+    needs: [lint-and-test-dart, test-cli, test-android, test-ios]
+    if: always()
+    steps:
+      - name: Write summary
+        run: |
+          echo "## PR Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint + Dart Tests | ${{ needs.lint-and-test-dart.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CLI Tests | ${{ needs.test-cli.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Android Build | ${{ needs.test-android.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| iOS Build | ${{ needs.test-ios.result }} |" >> $GITHUB_STEP_SUMMARY

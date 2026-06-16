@@ -1,0 +1,87 @@
+name: Main
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish-dry-run:
+    name: pub.dev Dry Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart pub publish --dry-run
+
+  coverage:
+    name: Coverage Upload
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter test --coverage
+      - uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+          flags: main
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  example-release-android:
+    name: Example Release APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate test fixtures
+        env:
+          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY_TEST }}
+        run: |
+          dart pub global activate --source path tool/fl_env_cli
+          dart pub global run fl_env_cli build --project-dir example/
+        continue-on-error: true
+      - name: Build release APK
+        working-directory: example
+        run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: example/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
+
+  example-release-ios:
+    name: Example Release iOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate test fixtures
+        env:
+          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY_TEST }}
+        run: |
+          dart pub global activate --source path tool/fl_env_cli
+          dart pub global run fl_env_cli build --project-dir example/
+        continue-on-error: true
+      - name: Install CocoaPods
+        working-directory: example/ios
+        run: pod install
+      - name: Build release iOS (no codesign)
+        working-directory: example
+        run: flutter build ios --release --no-codesign
