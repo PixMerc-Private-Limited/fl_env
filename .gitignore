@@ -117,3 +117,30 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+
+# fl_env generated secrets — NEVER commit these
+# Run `fl_env build --env=<name>` to regenerate after cloning
+
+# Android generated files
+**/com/pixmerc/fl_env/generated/FlEnvKey.kt
+**/res/raw/fl_env_registry.bin
+
+# iOS generated files
+**/Generated/FlEnvKey.swift
+**/Resources/FlEnvRegistry.bin
+
+# Web defines
+.fl_env_web_defines
+
+# Lockfile (records last build state — COMMIT THIS)
+# .fl_env.lock is intentionally NOT gitignored
+
+# Source .env files — never commit real values
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# CLI tool build artifacts
+tool/fl_env_cli/.dart_tool/
+tool/fl_env_cli/build/

@@ -1,0 +1,42 @@
+name: fl_env
+description: >-
+  Secure environment variable management for Flutter.
+  CLI-encrypted .env files, decrypted natively at runtime — no plaintext
+  at rest in the compiled binary.
+version: 0.1.0
+repository: https://github.com/PixMerc-Private-Limited/fl_env
+issue_tracker: https://github.com/PixMerc-Private-Limited/fl_env/issues
+homepage: https://fl-env.pixmerc.com
+
+topics:
+  - environment
+  - security
+  - dotenv
+  - encryption
+  - configuration
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.0.2
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.pixmerc.fl_env
+        pluginClass: FlEnvPlugin
+      ios:
+        pluginClass: FlEnvPlugin
+      web:
+        pluginClass: FlEnvWebPlugin
+        fileName: src/web/fl_env_web.dart
