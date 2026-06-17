@@ -81,13 +81,24 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Generate test key fixtures
+      - name: Install root dependencies
+        run: flutter pub get
+
+      - name: Install CLI dependencies
+        working-directory: tool/fl_env_cli
+        run: dart pub get
+
+      - name: Install example dependencies
+        working-directory: example
+        run: flutter pub get
+
+      - name: Generate test fixtures
+        working-directory: example
         env:
-          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY_TEST }}
+          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY }}
         run: |
-          dart pub global activate --source path tool/fl_env_cli
-          dart pub global run fl_env_cli build --project-dir example/
-        continue-on-error: true
+          cp .env.example .env
+          dart run ../tool/fl_env_cli/bin/fl_env.dart --project .
 
       - name: Build example APK (debug)
         working-directory: example
@@ -105,13 +116,24 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Generate test key fixtures
+      - name: Install root dependencies
+        run: flutter pub get
+
+      - name: Install CLI dependencies
+        working-directory: tool/fl_env_cli
+        run: dart pub get
+
+      - name: Install example dependencies
+        working-directory: example
+        run: flutter pub get
+
+      - name: Generate test fixtures
+        working-directory: example
         env:
-          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY_TEST }}
+          FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY }}
         run: |
-          dart pub global activate --source path tool/fl_env_cli
-          dart pub global run fl_env_cli build --project-dir example/
-        continue-on-error: true
+          cp .env.example .env
+          dart run ../tool/fl_env_cli/bin/fl_env.dart --project .
 
       - name: Install CocoaPods
         working-directory: example/ios

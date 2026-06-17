@@ -1,0 +1,9 @@
+# The CLI tool is a separate package; exclude it from the published fl_env package.
+# Consumers install fl_env; they run the CLI separately via dart run tool/fl_env_cli.
+tool/fl_env_cli/
+
+# Development tooling
+tool/generate_test_key.dart
+
+# Architecture decision records — useful in the repo but not on pub.dev
+doc/
