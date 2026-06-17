@@ -50,8 +50,7 @@ class EnvShowcasePage extends StatelessWidget {
             backgroundColor: theme.colorScheme.surface,
             title: const Text('fl_env'),
             actions: [
-              if (initError == null)
-                _TierChip(tier: FlEnvService.instance.activeEnvironment),
+              if (initError == null) _TierChip(tier: FlEnvService.instance.activeEnvironment),
               const SizedBox(width: 12),
             ],
           ),
@@ -80,25 +79,19 @@ class EnvShowcasePage extends StatelessWidget {
                         accessor: 'getInt()',
                         dartType: 'int?',
                         envKey: 'TIMEOUT',
-                        value: FlEnvService.instance
-                            .getInt('TIMEOUT')
-                            ?.toString(),
+                        value: FlEnvService.instance.getInt('TIMEOUT')?.toString(),
                       ),
                       _EnvCard(
                         accessor: 'getBool()',
                         dartType: 'bool?',
                         envKey: 'DEBUG',
-                        value: FlEnvService.instance
-                            .getBool('DEBUG')
-                            ?.toString(),
+                        value: FlEnvService.instance.getBool('DEBUG')?.toString(),
                       ),
                       _EnvCard(
                         accessor: 'getList()',
                         dartType: 'List<String>?',
                         envKey: 'TAGS',
-                        value: FlEnvService.instance
-                            .getList('TAGS')
-                            ?.join(' · '),
+                        value: FlEnvService.instance.getList('TAGS')?.join(' · '),
                       ),
                       _EnvCard(
                         accessor: 'get()',
@@ -140,11 +133,7 @@ class _TierChip extends StatelessWidget {
       avatar: Icon(icon, size: 14, color: Colors.white),
       label: Text(
         tier,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
+        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
       ),
       backgroundColor: color,
       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -202,7 +191,6 @@ class _EnvCard extends StatelessWidget {
         : redact
         ? '${value!.substring(0, value!.length.clamp(0, 8))}••••••••'
         : value!;
-
     return Card.outlined(
       margin: const EdgeInsets.only(bottom: 10),
       child: Padding(
@@ -224,10 +212,7 @@ class _EnvCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.secondaryContainer,
                           borderRadius: BorderRadius.circular(4),
@@ -246,9 +231,7 @@ class _EnvCard extends StatelessWidget {
                   Text(
                     display,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isSet
-                          ? theme.colorScheme.onSurface
-                          : theme.colorScheme.outline,
+                      color: isSet ? theme.colorScheme.onSurface : theme.colorScheme.outline,
                       fontStyle: isSet ? FontStyle.normal : FontStyle.italic,
                     ),
                   ),
@@ -330,8 +313,7 @@ class _ErrorCard extends StatelessWidget {
                 'cp .env.example .env\n'
                 'cp .env.staging.example .env.staging\n'
                 'cp .env.production.example .env.production\n'
-                'FL_ENV_MASTER_KEY=<64-hex> \\\n'
-                '  dart run ../tool/fl_env_cli/bin/fl_env.dart build',
+                'FL_ENV_MASTER_KEY=<64-hex> dart run fl_env build',
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontFamily: 'monospace',
                   color: theme.colorScheme.onErrorContainer,
@@ -369,9 +351,7 @@ class _SetupCardState extends State<_SetupCard> {
           ListTile(
             leading: const Icon(Icons.build_outlined),
             title: const Text('Quick-start'),
-            subtitle: const Text(
-              'How fl_env encrypts and loads your .env files',
-            ),
+            subtitle: const Text('How fl_env encrypts and loads your .env files'),
             trailing: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
             onTap: () => setState(() => _expanded = !_expanded),
           ),
@@ -393,18 +373,14 @@ class _SetupCardState extends State<_SetupCard> {
                   _Step(
                     n: '2',
                     title: 'Set your master key (never commit this)',
-                    code: 'export FL_ENV_MASTER_KEY=<64-char hex>',
+                    code: 'export FL_ENV_MASTER_KEY=\$(dart run fl_env keygen)',
                   ),
                   _Step(
                     n: '3',
                     title: 'Build the encrypted registry',
-                    code: 'dart run ../tool/fl_env_cli/bin/fl_env.dart build',
+                    code: 'dart run fl_env build',
                   ),
-                  const _Step(
-                    n: '4',
-                    title: 'Run the app',
-                    code: 'flutter run',
-                  ),
+                  const _Step(n: '4', title: 'Run the app', code: 'flutter run'),
                   const SizedBox(height: 8),
                   Text(
                     'The registry (FlEnvRegistry.bin) and key file '
@@ -465,9 +441,7 @@ class _Step extends StatelessWidget {
                   ),
                   child: Text(
                     code,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontFamily: 'monospace',
-                    ),
+                    style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                   ),
                 ),
               ],
