@@ -31,11 +31,7 @@ class ScanResult {
 /// - `.env.staging` → `'staging'`
 /// - `.env.prod` → `'prod'`
 class FileScanner {
-  static const _ignoredSuffixes = <String>[
-    '.example',
-    '.sample',
-    '.template',
-  ];
+  static const _ignoredSuffixes = <String>['.example', '.sample', '.template'];
 
   static const _warningSubstrings = <String>[
     'backup',

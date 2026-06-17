@@ -4,23 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   setUp(() async {
     await FlEnvService.instance.init(
-      channel: const FlEnvFakeChannel(
-        {
-          'API_URL': 'https://api.example.com',
-          'TIMEOUT': '30',
-          'TIMEOUT_FLOAT': '1.5',
-          'DEBUG': 'true',
-          'ENABLED': '1',
-          'DISABLED': 'false',
-          'NOPE': 'no',
-          'TAGS': 'flutter,dart,mobile',
-          'NOT_BOOL': 'maybe',
-          'NOT_INT': 'abc',
-          'NOT_FLOAT': 'xyz',
-          'EMPTY_VAL': '',
-        },
-        activeTier: 'staging',
-      ),
+      channel: const FlEnvFakeChannel({
+        'API_URL': 'https://api.example.com',
+        'TIMEOUT': '30',
+        'TIMEOUT_FLOAT': '1.5',
+        'DEBUG': 'true',
+        'ENABLED': '1',
+        'DISABLED': 'false',
+        'NOPE': 'no',
+        'TAGS': 'flutter,dart,mobile',
+        'NOT_BOOL': 'maybe',
+        'NOT_INT': 'abc',
+        'NOT_FLOAT': 'xyz',
+        'EMPTY_VAL': '',
+      }, activeTier: 'staging'),
     );
   });
 
@@ -32,10 +29,7 @@ void main() {
     });
 
     test('availableEnvironments contains activeEnvironment', () {
-      expect(
-        FlEnvService.instance.availableEnvironments,
-        contains('staging'),
-      );
+      expect(FlEnvService.instance.availableEnvironments, contains('staging'));
     });
 
     test('throws FlEnvNotInitializedException when not initialized', () async {
@@ -163,10 +157,11 @@ void main() {
 
   group('getList', () {
     test('splits on comma by default', () {
-      expect(
-        FlEnvService.instance.getList('TAGS'),
-        ['flutter', 'dart', 'mobile'],
-      );
+      expect(FlEnvService.instance.getList('TAGS'), [
+        'flutter',
+        'dart',
+        'mobile',
+      ]);
     });
 
     test('returns null for missing key', () {
@@ -174,10 +169,11 @@ void main() {
     });
 
     test('respects custom separator', () {
-      expect(
-        FlEnvService.instance.getList('TAGS', separator: ','),
-        ['flutter', 'dart', 'mobile'],
-      );
+      expect(FlEnvService.instance.getList('TAGS', separator: ','), [
+        'flutter',
+        'dart',
+        'mobile',
+      ]);
     });
   });
 
@@ -193,8 +189,11 @@ void main() {
       expect(
         () => FlEnvService.instance.switchEnvironment('production'),
         throwsA(
-          isA<FlEnvPhaseException>()
-              .having((e) => e.code, 'code', 'FL_ENV_E005'),
+          isA<FlEnvPhaseException>().having(
+            (e) => e.code,
+            'code',
+            'FL_ENV_E005',
+          ),
         ),
       );
     });

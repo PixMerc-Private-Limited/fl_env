@@ -11,11 +11,11 @@ import 'package:fl_env/src/cli/commands/setup_command.dart';
 class FlEnvCommandRunner extends CommandRunner<void> {
   /// Creates the command runner with all registered sub-commands.
   FlEnvCommandRunner()
-      : super(
-          'fl_env',
-          'Secure .env encryption for Flutter — '
-              'CLI-encrypted files, native decryption at runtime.',
-        ) {
+    : super(
+        'fl_env',
+        'Secure .env encryption for Flutter — '
+            'CLI-encrypted files, native decryption at runtime.',
+      ) {
     argParser
       ..addFlag(
         'version',

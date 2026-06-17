@@ -70,11 +70,7 @@ void main() {
       throwAndCatch(const FlEnvInitException(detail: 'test'));
       throwAndCatch(const FlEnvKeyNotFoundException(key: 'K'));
       throwAndCatch(
-        const FlEnvTypeCastException(
-          key: 'K',
-          value: 'v',
-          targetType: 'bool',
-        ),
+        const FlEnvTypeCastException(key: 'K', value: 'v', targetType: 'bool'),
       );
       throwAndCatch(const FlEnvPhaseException(feature: 'f'));
     });

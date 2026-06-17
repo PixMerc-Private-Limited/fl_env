@@ -217,19 +217,13 @@ DEBUG=true
     test('writes android key file to correct path', () {
       final androidBase = p.join(tempDir.path, 'android', 'app', 'src', 'main');
       final keyDir = Directory(
-        p.join(
-          androidBase,
-          'kotlin',
-          'com',
-          'pixmerc',
-          'fl_env',
-          'generated',
-        ),
+        p.join(androidBase, 'kotlin', 'com', 'pixmerc', 'fl_env', 'generated'),
       )..createSync(recursive: true);
 
       final signed = key.map((b) => b > 127 ? b - 256 : b).toList();
       final byteList = signed.join(', ');
-      final source = 'internal object FlEnvKey { val bytes: ByteArray = '
+      final source =
+          'internal object FlEnvKey { val bytes: ByteArray = '
           'byteArrayOf($byteList) }';
       File(p.join(keyDir.path, 'FlEnvKey.kt')).writeAsStringSync(source);
 

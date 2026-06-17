@@ -69,10 +69,10 @@ class FlEnvService {
 
   /// The config snapshot (Phase 1: defaults only).
   FlEnvConfig get config => FlEnvConfig(
-        defaultEnv: _activeEnvironment,
-        envFiles: const {},
-        outputDir: '',
-      );
+    defaultEnv: _activeEnvironment,
+    envFiles: const {},
+    outputDir: '',
+  );
 
   // ---------------------------------------------------------------------------
   // Core accessors

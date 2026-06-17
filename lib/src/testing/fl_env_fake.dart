@@ -15,7 +15,7 @@ import 'package:fl_env/src/channel/fl_env_channel.dart';
 class FlEnvFakeChannel implements FlEnvChannelBase {
   /// Creates a [FlEnvFakeChannel] with the supplied [values].
   const FlEnvFakeChannel(this._values, {String activeTier = 'test'})
-      : _activeTier = activeTier;
+    : _activeTier = activeTier;
 
   final Map<String, String> _values;
   final String _activeTier;

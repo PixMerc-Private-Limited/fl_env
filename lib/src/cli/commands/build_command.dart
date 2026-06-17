@@ -127,9 +127,7 @@ class BuildCommand extends Command<void> {
     _writeIosKeyFile(iosBase, aesKey);
 
     // 10. Update lockfile
-    final activeTiers = {
-      targetTier: envFilePath,
-    };
+    final activeTiers = {targetTier: envFilePath};
     LockManager(projectRoot).write(activeTiers);
 
     stdout.writeln('fl_env build complete.');

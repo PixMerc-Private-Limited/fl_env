@@ -37,9 +37,9 @@ class LockManager {
     final hashes = tierToPath.map(
       (tier, filePath) => MapEntry(tier, _sha256File(filePath)),
     );
-    File(_lockPath).writeAsStringSync(
-      const JsonEncoder.withIndent('  ').convert(hashes),
-    );
+    File(
+      _lockPath,
+    ).writeAsStringSync(const JsonEncoder.withIndent('  ').convert(hashes));
   }
 
   /// Returns `true` if any file in [tierToPath] has changed since the last

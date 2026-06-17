@@ -26,7 +26,8 @@ abstract class FlEnvException implements Exception {
   final String code;
 
   @override
-  String toString() => '[$code] $message\n'
+  String toString() =>
+      '[$code] $message\n'
       '  Suggestion: $suggestion\n'
       '  Docs: $documentationUrl';
 }
@@ -38,15 +39,15 @@ abstract class FlEnvException implements Exception {
 class FlEnvNotInitializedException extends FlEnvException {
   /// Creates a [FlEnvNotInitializedException].
   const FlEnvNotInitializedException()
-      : super(
-          code: 'FL_ENV_E001',
-          message: 'FlEnvService has not been initialised.',
-          suggestion:
-              'Call `await FlEnvService.instance.init()` in main() before '
-              'calling any other FlEnvService methods.',
-          documentationUrl:
-              'https://github.com/PixMerc-Private-Limited/fl_env#initialization',
-        );
+    : super(
+        code: 'FL_ENV_E001',
+        message: 'FlEnvService has not been initialised.',
+        suggestion:
+            'Call `await FlEnvService.instance.init()` in main() before '
+            'calling any other FlEnvService methods.',
+        documentationUrl:
+            'https://github.com/PixMerc-Private-Limited/fl_env#initialization',
+      );
 }
 
 /// Thrown when the native layer fails to decrypt or load the registry.
@@ -58,15 +59,15 @@ class FlEnvNotInitializedException extends FlEnvException {
 class FlEnvInitException extends FlEnvException {
   /// Creates a [FlEnvInitException] with a native [detail] message.
   const FlEnvInitException({required String detail})
-      : super(
-          code: 'FL_ENV_E002',
-          message: 'FlEnvService failed to initialise: $detail',
-          suggestion:
-              'Run `dart run fl_env_cli build` to regenerate the encrypted '
-              'registry, then rebuild the native app.',
-          documentationUrl:
-              'https://github.com/PixMerc-Private-Limited/fl_env#troubleshooting',
-        );
+    : super(
+        code: 'FL_ENV_E002',
+        message: 'FlEnvService failed to initialise: $detail',
+        suggestion:
+            'Run `dart run fl_env_cli build` to regenerate the encrypted '
+            'registry, then rebuild the native app.',
+        documentationUrl:
+            'https://github.com/PixMerc-Private-Limited/fl_env#troubleshooting',
+      );
 }
 
 /// Thrown by [FlEnvService.getRequired] when the requested key is absent from
@@ -76,15 +77,15 @@ class FlEnvInitException extends FlEnvException {
 class FlEnvKeyNotFoundException extends FlEnvException {
   /// Creates a [FlEnvKeyNotFoundException] for [key].
   const FlEnvKeyNotFoundException({required String key})
-      : super(
-          code: 'FL_ENV_E003',
-          message: "Key '$key' was not found in the active environment.",
-          suggestion:
-              "Check that '$key' is defined in the appropriate .env file "
-              'and that you have re-run `fl_env build`.',
-          documentationUrl:
-              'https://github.com/PixMerc-Private-Limited/fl_env#accessing-values',
-        );
+    : super(
+        code: 'FL_ENV_E003',
+        message: "Key '$key' was not found in the active environment.",
+        suggestion:
+            "Check that '$key' is defined in the appropriate .env file "
+            'and that you have re-run `fl_env build`.',
+        documentationUrl:
+            'https://github.com/PixMerc-Private-Limited/fl_env#accessing-values',
+      );
 }
 
 /// Thrown by typed getters (e.g. [FlEnvService.getInt]) when the raw string
@@ -98,15 +99,16 @@ class FlEnvTypeCastException extends FlEnvException {
     required String value,
     required String targetType,
   }) : super(
-          code: 'FL_ENV_E004',
-          message: "Key '$key' has value '$value' which cannot be parsed as "
-              '$targetType.',
-          suggestion:
-              "Check that the value for '$key' in your .env file is a valid "
-              '$targetType.',
-          documentationUrl:
-              'https://github.com/PixMerc-Private-Limited/fl_env#typed-access',
-        );
+         code: 'FL_ENV_E004',
+         message:
+             "Key '$key' has value '$value' which cannot be parsed as "
+             '$targetType.',
+         suggestion:
+             "Check that the value for '$key' in your .env file is a valid "
+             '$targetType.',
+         documentationUrl:
+             'https://github.com/PixMerc-Private-Limited/fl_env#typed-access',
+       );
 }
 
 /// Thrown when a feature is called that is not available in the current
@@ -119,13 +121,14 @@ class FlEnvTypeCastException extends FlEnvException {
 class FlEnvPhaseException extends FlEnvException {
   /// Creates a [FlEnvPhaseException] for the unsupported [feature].
   const FlEnvPhaseException({required String feature})
-      : super(
-          code: 'FL_ENV_E005',
-          message: "'$feature' is not available in fl_env 0.1.x (Phase 1).",
-          suggestion: 'This capability is planned for fl_env 0.2.0. '
-              'Subscribe to https://github.com/PixMerc-Private-Limited/fl_env '
-              'for release notifications.',
-          documentationUrl:
-              'https://github.com/PixMerc-Private-Limited/fl_env#roadmap',
-        );
+    : super(
+        code: 'FL_ENV_E005',
+        message: "'$feature' is not available in fl_env 0.1.x (Phase 1).",
+        suggestion:
+            'This capability is planned for fl_env 0.2.0. '
+            'Subscribe to https://github.com/PixMerc-Private-Limited/fl_env '
+            'for release notifications.',
+        documentationUrl:
+            'https://github.com/PixMerc-Private-Limited/fl_env#roadmap',
+      );
 }

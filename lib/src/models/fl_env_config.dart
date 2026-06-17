@@ -21,6 +21,7 @@ class FlEnvConfig {
   final String outputDir;
 
   @override
-  String toString() => 'FlEnvConfig(defaultEnv: $defaultEnv, '
+  String toString() =>
+      'FlEnvConfig(defaultEnv: $defaultEnv, '
       'envFiles: $envFiles, outputDir: $outputDir)';
 }

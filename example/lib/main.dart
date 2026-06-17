@@ -80,22 +80,25 @@ class EnvShowcasePage extends StatelessWidget {
                         accessor: 'getInt()',
                         dartType: 'int?',
                         envKey: 'TIMEOUT',
-                        value:
-                            FlEnvService.instance.getInt('TIMEOUT')?.toString(),
+                        value: FlEnvService.instance
+                            .getInt('TIMEOUT')
+                            ?.toString(),
                       ),
                       _EnvCard(
                         accessor: 'getBool()',
                         dartType: 'bool?',
                         envKey: 'DEBUG',
-                        value:
-                            FlEnvService.instance.getBool('DEBUG')?.toString(),
+                        value: FlEnvService.instance
+                            .getBool('DEBUG')
+                            ?.toString(),
                       ),
                       _EnvCard(
                         accessor: 'getList()',
                         dartType: 'List<String>?',
                         envKey: 'TAGS',
-                        value:
-                            FlEnvService.instance.getList('TAGS')?.join(' · '),
+                        value: FlEnvService.instance
+                            .getList('TAGS')
+                            ?.join(' · '),
                       ),
                       _EnvCard(
                         accessor: 'get()',
@@ -164,9 +167,9 @@ class _SectionHeader extends StatelessWidget {
     return Text(
       title,
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-            letterSpacing: 0.8,
-          ),
+        color: Theme.of(context).colorScheme.primary,
+        letterSpacing: 0.8,
+      ),
     );
   }
 }
@@ -197,8 +200,8 @@ class _EnvCard extends StatelessWidget {
     final display = !isSet
         ? '(not set)'
         : redact
-            ? '${value!.substring(0, value!.length.clamp(0, 8))}••••••••'
-            : value!;
+        ? '${value!.substring(0, value!.length.clamp(0, 8))}••••••••'
+        : value!;
 
     return Card.outlined(
       margin: const EdgeInsets.only(bottom: 10),
@@ -366,8 +369,9 @@ class _SetupCardState extends State<_SetupCard> {
           ListTile(
             leading: const Icon(Icons.build_outlined),
             title: const Text('Quick-start'),
-            subtitle:
-                const Text('How fl_env encrypts and loads your .env files'),
+            subtitle: const Text(
+              'How fl_env encrypts and loads your .env files',
+            ),
             trailing: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
             onTap: () => setState(() => _expanded = !_expanded),
           ),
@@ -381,7 +385,8 @@ class _SetupCardState extends State<_SetupCard> {
                   _Step(
                     n: '1',
                     title: 'Copy example env files',
-                    code: 'cp .env.example .env\n'
+                    code:
+                        'cp .env.example .env\n'
                         'cp .env.staging.example .env.staging\n'
                         'cp .env.production.example .env.production',
                   ),

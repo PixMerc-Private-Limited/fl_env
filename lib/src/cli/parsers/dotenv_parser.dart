@@ -35,8 +35,9 @@ class DotenvParser {
       if (line.isEmpty || line.startsWith('#')) continue;
 
       // Strip optional `export ` prefix.
-      final stripped =
-          line.startsWith('export ') ? line.substring(7).trimLeft() : line;
+      final stripped = line.startsWith('export ')
+          ? line.substring(7).trimLeft()
+          : line;
 
       // Must contain `=`.
       final eqIndex = stripped.indexOf('=');
