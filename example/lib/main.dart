@@ -405,9 +405,8 @@ class _SetupCardState extends State<_SetupCard> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'The registry (FlEnvRegistry.bin) and key file '
-                    '(FlEnvKey.swift / .kt) are gitignored and regenerated '
-                    'from your .env files on each build.',
+                    'FlEnvKey.bin and FlEnvRegistry.bin are gitignored and '
+                    'regenerated from your .env files on each `fl_env build`.',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),

@@ -46,13 +46,13 @@ public class FlEnvPlugin: NSObject, FlutterPlugin {
     private func initialize() {
         do {
             let key = try KeychainManager.getKey()
-            // Use the plugin's own bundle so the resource is found whether the pod
-            // is compiled as a static library (Bundle.main) or a dynamic framework
-            // (framework bundle) — the latter being the case when use_frameworks! is set.
-            let pluginBundle = Bundle(for: type(of: self))
-            guard let url = pluginBundle.url(forResource: "FlEnvRegistry", withExtension: "bin"),
+            // Both FlEnvKey.bin and FlEnvRegistry.bin live in the consumer's app
+            // bundle (default: ios/Runner/), added via the Podfile post-install hook
+            // that `fl_env setup` writes. Bundle.main is always the app bundle,
+            // regardless of use_frameworks! or static library configuration.
+            guard let url = Bundle.main.url(forResource: "FlEnvRegistry", withExtension: "bin"),
                   let data = try? Data(contentsOf: url) else {
-                NSLog("[FlEnv] FlEnvRegistry.bin not found in bundle — run 'fl_env build' first.")
+                NSLog("[FlEnv] FlEnvRegistry.bin not found in app bundle — run 'dart run fl_env build' then 'pod install'.")
                 return
             }
             registry = try RegistryReader.readAll(key: key, from: data)

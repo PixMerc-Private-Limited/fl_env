@@ -54,7 +54,7 @@ class FlEnvPlugin : FlutterPlugin, MethodCallHandler {
 
     private fun initialize() {
         try {
-            val key = KeyManager.getKey()
+            val key = KeyManager.getKey(context)
             registry = RegistryReader(context).readAll(key)
             initialized = true
         } catch (e: Exception) {

@@ -11,7 +11,10 @@ Pod::Spec.new do |s|
   s.author           = { 'PixMerc' => 'dev@pixmerc.com' }
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*.{swift,h,m}'
-  s.resources        = 'Classes/Resources/*'
+  # Resources (FlEnvKey.bin, FlEnvRegistry.bin) are written by `fl_env build`
+  # into the consumer's app bundle (ios/Runner/ by default) and added to Xcode's
+  # Copy Bundle Resources phase via the Podfile hook that `fl_env setup` installs.
+  # The plugin reads them from Bundle.main at runtime.
   s.dependency 'Flutter'
   s.platform         = :ios, '13.0'
   s.swift_version    = '5.9'

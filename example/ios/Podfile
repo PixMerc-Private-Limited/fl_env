@@ -40,4 +40,28 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
+
+  # fl_env-setup — do not remove
+  # Adds FlEnvKey.bin and FlEnvRegistry.bin (written by `dart run fl_env build`)
+  # to the Runner target's Copy Bundle Resources build phase so they are
+  # available via Bundle.main at runtime.
+  require 'xcodeproj'
+  project_path = File.expand_path('Runner.xcodeproj', __dir__)
+  if File.exist?(project_path)
+    project = Xcodeproj::Project.open(project_path)
+    fl_target = project.targets.find { |t| t.name == 'Runner' }
+    if fl_target
+      phase = fl_target.build_phases.find { |p| p.is_a?(Xcodeproj::Project::Object::PBXResourcesBuildPhase) }
+      if phase
+        runner_group = project.main_group.find_subpath('Runner', true)
+        %w[FlEnvKey.bin FlEnvRegistry.bin].each do |name|
+          next if phase.files.any? { |f| f.file_ref&.display_name == name }
+          ref = runner_group.new_reference(name)
+          ref.set_source_tree('<group>')
+          phase.add_file_reference(ref)
+        end
+        project.save
+      end
+    end
+  end
 end

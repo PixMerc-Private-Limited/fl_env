@@ -45,8 +45,7 @@ class FlEnvNotInitializedException extends FlEnvException {
         suggestion:
             'Call `await FlEnvService.instance.init()` in main() before '
             'calling any other FlEnvService methods.',
-        documentationUrl:
-            'https://github.com/PixMerc-Private-Limited/fl_env#initialization',
+        documentationUrl: 'https://fl-env.pixmerc.com/errors/FL_ENV_E001',
       );
 }
 
@@ -63,10 +62,9 @@ class FlEnvInitException extends FlEnvException {
         code: 'FL_ENV_E002',
         message: 'FlEnvService failed to initialise: $detail',
         suggestion:
-            'Run `dart run fl_env_cli build` to regenerate the encrypted '
+            'Run `dart run fl_env build` to regenerate the encrypted '
             'registry, then rebuild the native app.',
-        documentationUrl:
-            'https://github.com/PixMerc-Private-Limited/fl_env#troubleshooting',
+        documentationUrl: 'https://fl-env.pixmerc.com/errors/FL_ENV_E002',
       );
 }
 
@@ -83,8 +81,7 @@ class FlEnvKeyNotFoundException extends FlEnvException {
         suggestion:
             "Check that '$key' is defined in the appropriate .env file "
             'and that you have re-run `fl_env build`.',
-        documentationUrl:
-            'https://github.com/PixMerc-Private-Limited/fl_env#accessing-values',
+        documentationUrl: 'https://fl-env.pixmerc.com/errors/FL_ENV_E003',
       );
 }
 
@@ -106,8 +103,7 @@ class FlEnvTypeCastException extends FlEnvException {
          suggestion:
              "Check that the value for '$key' in your .env file is a valid "
              '$targetType.',
-         documentationUrl:
-             'https://github.com/PixMerc-Private-Limited/fl_env#typed-access',
+         documentationUrl: 'https://fl-env.pixmerc.com/errors/FL_ENV_E004',
        );
 }
 
@@ -126,9 +122,7 @@ class FlEnvPhaseException extends FlEnvException {
         message: "'$feature' is not available in fl_env 0.1.x (Phase 1).",
         suggestion:
             'This capability is planned for fl_env 0.2.0. '
-            'Subscribe to https://github.com/PixMerc-Private-Limited/fl_env '
-            'for release notifications.',
-        documentationUrl:
-            'https://github.com/PixMerc-Private-Limited/fl_env#roadmap',
+            'See https://fl-env.pixmerc.com/roadmap for release notifications.',
+        documentationUrl: 'https://fl-env.pixmerc.com/errors/FL_ENV_E005',
       );
 }

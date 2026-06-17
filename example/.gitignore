@@ -46,3 +46,20 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# fl_env generated files — do not commit
+# Run `dart run fl_env build` to regenerate
+
+# Android
+android/app/src/main/res/raw/fl_env_key.bin
+android/app/src/main/res/raw/fl_env_registry.bin
+
+# iOS
+ios/Runner/FlEnvKey.bin
+ios/Runner/FlEnvRegistry.bin
+
+# Source .env files
+.env
+.env.*
+!.env.example
+!.env.*.example

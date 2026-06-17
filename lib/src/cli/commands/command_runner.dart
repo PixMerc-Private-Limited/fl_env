@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:args/command_runner.dart';
 import 'package:fl_env/src/cli/commands/build_command.dart';
 import 'package:fl_env/src/cli/commands/check_command.dart';
+import 'package:fl_env/src/cli/commands/inspect_command.dart';
 import 'package:fl_env/src/cli/commands/scan_command.dart';
 import 'package:fl_env/src/cli/commands/setup_command.dart';
 
@@ -31,9 +32,10 @@ class FlEnvCommandRunner extends CommandRunner<void> {
       );
 
     addCommand(ScanCommand());
-    addCommand(CheckCommand());
     addCommand(SetupCommand());
     addCommand(BuildCommand());
+    addCommand(CheckCommand());
+    addCommand(InspectCommand());
     addCommand(_KeygenCommand());
   }
 
