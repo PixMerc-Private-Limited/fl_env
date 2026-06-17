@@ -8,7 +8,7 @@ The app loads encrypted environment values from three tiers (development / stagi
 
 ## Prerequisites
 
-- Flutter ≥ 3.35.0
+- Flutter ≥ 3.41.0
 - A master key (generated below)
 
 ---
