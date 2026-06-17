@@ -98,7 +98,9 @@ jobs:
           FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY }}
         run: |
           cp .env.example .env
-          dart run ../tool/fl_env_cli/bin/fl_env.dart --project .
+          cp .env.staging.example .env.staging
+          cp .env.production.example .env.production
+          dart run ../tool/fl_env_cli/bin/fl_env.dart build
 
       - name: Build example APK (debug)
         working-directory: example
@@ -133,7 +135,9 @@ jobs:
           FL_ENV_MASTER_KEY: ${{ secrets.FL_ENV_MASTER_KEY }}
         run: |
           cp .env.example .env
-          dart run ../tool/fl_env_cli/bin/fl_env.dart --project .
+          cp .env.staging.example .env.staging
+          cp .env.production.example .env.production
+          dart run ../tool/fl_env_cli/bin/fl_env.dart build
 
       - name: Install CocoaPods
         working-directory: example/ios

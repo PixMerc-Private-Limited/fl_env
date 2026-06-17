@@ -1,8 +1,13 @@
 fl_env:
   default_env: development
   output:
-    android: android/app/src/main
-    ios: ios/Runner
+    # Points at the plugin's Gradle module so FlEnvKey.kt lands in the same
+    # compilation unit as KeyManager.kt (com.pixmerc.fl_env.generated).
+    android: ../android/src/main
+    # Points at the plugin's pod source dir so FlEnvKey.swift is picked up by
+    # source_files = 'Classes/**/*' in fl_env.podspec, and FlEnvRegistry.bin is
+    # bundled automatically via s.resources = 'Classes/Resources/*'.
+    ios: ../ios/Classes
   tiers:
     development: .env
     staging: .env.staging
