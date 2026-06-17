@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:fl_env_cli/src/lockfile/lock_manager.dart';
-import 'package:fl_env_cli/src/parsers/yaml_config.dart';
+import 'package:fl_env/src/cli/lockfile/lock_manager.dart';
+import 'package:fl_env/src/cli/parsers/yaml_config.dart';
 
 /// `fl_env check` — verifies the registry is up-to-date with the `.env` files.
 ///

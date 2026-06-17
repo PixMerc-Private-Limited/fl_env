@@ -3,11 +3,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:args/command_runner.dart';
-import 'package:fl_env_cli/src/crypto/aes_encryptor.dart';
-import 'package:fl_env_cli/src/lockfile/lock_manager.dart';
-import 'package:fl_env_cli/src/parsers/dotenv_parser.dart';
-import 'package:fl_env_cli/src/parsers/file_scanner.dart';
-import 'package:fl_env_cli/src/parsers/yaml_config.dart';
+import 'package:fl_env/src/cli/crypto/aes_encryptor.dart';
+import 'package:fl_env/src/cli/lockfile/lock_manager.dart';
+import 'package:fl_env/src/cli/parsers/dotenv_parser.dart';
+import 'package:fl_env/src/cli/parsers/file_scanner.dart';
+import 'package:fl_env/src/cli/parsers/yaml_config.dart';
 import 'package:path/path.dart' as p;
 
 /// `fl_env build` — the core pipeline command.
@@ -46,7 +46,7 @@ class BuildCommand extends Command<void> {
         'Set it with:\n'
         '  export FL_ENV_MASTER_KEY=<64-char-hex-key>\n'
         'Generate a new key with:\n'
-        '  dart run fl_env_cli keygen',
+        '  dart run fl_env keygen',
       );
       exitCode = 4;
       return;

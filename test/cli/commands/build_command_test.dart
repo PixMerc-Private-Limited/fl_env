@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:fl_env_cli/src/crypto/aes_encryptor.dart';
-import 'package:fl_env_cli/src/parsers/dotenv_parser.dart';
+import 'package:fl_env/src/cli/crypto/aes_encryptor.dart';
+import 'package:fl_env/src/cli/parsers/dotenv_parser.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
@@ -41,12 +41,7 @@ Map<String, String> readRegistry(Uint8List data, Uint8List key) {
   var offset = 0;
 
   // Validate magic
-  final magic = [
-    data[0],
-    data[1],
-    data[2],
-    data[3],
-  ];
+  final magic = [data[0], data[1], data[2], data[3]];
   expect(magic, equals([0x46, 0x4C, 0x45, 0x4E]), reason: 'magic mismatch');
   offset += 4;
 
@@ -75,10 +70,7 @@ Map<String, String> readRegistry(Uint8List data, Uint8List key) {
 
     final plaintext = AesGcmEncryptor.decrypt(
       key,
-      EncryptedEntry(
-        nonce: nonce,
-        cipherWithTag: cipherWithTag,
-      ),
+      EncryptedEntry(nonce: nonce, cipherWithTag: cipherWithTag),
     );
     result[entryKey] = utf8.decode(plaintext);
   }
@@ -207,7 +199,6 @@ DEBUG=true
     });
 
     test('FlEnvKey.kt byte conversion: unsigned to signed', () {
-      // Verify the signed-byte conversion used when writing FlEnvKey.kt
       final testKey = Uint8List.fromList([0, 127, 128, 255]);
       final signed = testKey.map((b) => b > 127 ? b - 256 : b).toList();
       expect(signed[0], 0);
@@ -236,7 +227,6 @@ DEBUG=true
         ),
       )..createSync(recursive: true);
 
-      // Simulate WriteAndroidKeyFile
       final signed = key.map((b) => b > 127 ? b - 256 : b).toList();
       final byteList = signed.join(', ');
       final source = 'internal object FlEnvKey { val bytes: ByteArray = '
@@ -246,8 +236,6 @@ DEBUG=true
       final written = File(p.join(keyDir.path, 'FlEnvKey.kt'));
       expect(written.existsSync(), isTrue);
       expect(written.readAsStringSync(), contains('byteArrayOf'));
-      // Must NOT contain unsigned values > 127 without the leading minus
-      // (This is a sanity check: each value is valid Kotlin byte literal)
       for (final b in signed) {
         expect(b, inInclusiveRange(-128, 127));
       }

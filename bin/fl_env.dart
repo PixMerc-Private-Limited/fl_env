@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:fl_env_cli/fl_env_cli.dart';
+import 'package:fl_env/src/cli/commands/command_runner.dart';
 
 Future<void> main(List<String> arguments) async {
   final runner = FlEnvCommandRunner();

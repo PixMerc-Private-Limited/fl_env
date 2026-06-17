@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fl_env_cli/src/parsers/file_scanner.dart';
+import 'package:fl_env/src/cli/parsers/file_scanner.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 

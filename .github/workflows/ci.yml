@@ -32,23 +32,3 @@ jobs:
 
       - name: Run tests
         run: flutter test
-
-  cli:
-    name: CLI Analyze · Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: dart-lang/setup-dart@v1
-
-      - name: Install CLI dependencies
-        working-directory: tool/fl_env_cli
-        run: dart pub get
-
-      - name: Analyze CLI
-        working-directory: tool/fl_env_cli
-        run: dart analyze --fatal-infos
-
-      - name: Run CLI tests
-        working-directory: tool/fl_env_cli
-        run: dart test

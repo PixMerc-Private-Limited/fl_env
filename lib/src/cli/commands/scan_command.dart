@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-
-import 'package:fl_env_cli/src/parsers/file_scanner.dart';
+import 'package:fl_env/src/cli/parsers/file_scanner.dart';
 
 /// `fl_env scan` — discovers `.env` files and reports what fl_env sees.
 class ScanCommand extends Command<void> {

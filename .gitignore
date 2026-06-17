@@ -7,8 +7,6 @@
 .buildlog/
 .history
 
-
-
 # Flutter repo-specific
 /bin/cache/
 /bin/internal/bootstrap.bat
@@ -129,6 +127,11 @@ app.*.symbols
 **/Generated/FlEnvKey.swift
 **/Resources/FlEnvRegistry.bin
 
+# Placeholder stubs — committed so the plugin compiles without running `fl_env build`.
+# fl_env build overwrites these with real bytes. Do NOT commit them after building.
+!ios/Classes/Generated/FlEnvKey.swift
+!android/src/main/kotlin/com/pixmerc/fl_env/generated/FlEnvKey.kt
+
 # Web defines
 .fl_env_web_defines
 
@@ -144,3 +147,6 @@ app.*.symbols
 # CLI tool build artifacts
 tool/fl_env_cli/.dart_tool/
 tool/fl_env_cli/build/
+
+# FVM Version Cache
+.fvm/

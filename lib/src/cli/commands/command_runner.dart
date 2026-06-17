@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:args/command_runner.dart';
-import 'package:fl_env_cli/src/commands/build_command.dart';
-import 'package:fl_env_cli/src/commands/check_command.dart';
-import 'package:fl_env_cli/src/commands/scan_command.dart';
-import 'package:fl_env_cli/src/commands/setup_command.dart';
+import 'package:fl_env/src/cli/commands/build_command.dart';
+import 'package:fl_env/src/cli/commands/check_command.dart';
+import 'package:fl_env/src/cli/commands/scan_command.dart';
+import 'package:fl_env/src/cli/commands/setup_command.dart';
 
 /// Top-level CLI runner for the `fl_env` tool.
 class FlEnvCommandRunner extends CommandRunner<void> {
@@ -41,7 +41,7 @@ class FlEnvCommandRunner extends CommandRunner<void> {
   Future<void> run(Iterable<String> args) async {
     final results = argParser.parse(args);
     if (results['version'] == true) {
-      stdout.writeln('fl_env_cli 0.1.0');
+      stdout.writeln('fl_env 0.1.0');
       return;
     }
     await super.run(args);

@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:fl_env_cli/src/crypto/aes_encryptor.dart';
+import 'package:fl_env/src/cli/crypto/aes_encryptor.dart';
 import 'package:test/test.dart';
 
 void main() {
-  // A known 64-char hex master key for deterministic testing.
   const testMasterKey =
       'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
 
@@ -57,13 +56,10 @@ void main() {
       expect(entry.cipherWithTag, isNot(equals(plain)));
     });
 
-    test(
-        'two encryptions of same plaintext produce different ciphertexts (random nonce)',
-        () {
+    test('two encryptions produce different ciphertexts (random nonce)', () {
       final plain = Uint8List.fromList(utf8.encode('same value'));
       final e1 = AesGcmEncryptor.encrypt(key, plain);
       final e2 = AesGcmEncryptor.encrypt(key, plain);
-      // Nonces must differ
       expect(e1.nonce, isNot(equals(e2.nonce)));
     });
 
@@ -119,10 +115,7 @@ void main() {
         key,
         Uint8List.fromList(utf8.encode('secret')),
       );
-      expect(
-        () => AesGcmEncryptor.decrypt(wrongKey, entry),
-        throwsA(anything),
-      );
+      expect(() => AesGcmEncryptor.decrypt(wrongKey, entry), throwsA(anything));
     });
 
     test('decryption fails with tampered ciphertext', () {
@@ -130,7 +123,6 @@ void main() {
         key,
         Uint8List.fromList(utf8.encode('sensitive')),
       );
-      // Flip a byte in the ciphertext
       final tampered = Uint8List.fromList(entry.cipherWithTag);
       tampered[0] ^= 0xFF;
       final tamperedEntry = EncryptedEntry(

@@ -1,4 +1,4 @@
-import 'package:fl_env_cli/src/parsers/dotenv_parser.dart';
+import 'package:fl_env/src/cli/parsers/dotenv_parser.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -6,9 +6,6 @@ void main() {
 
   setUp(() => parser = DotenvParser());
 
-  // ---------------------------------------------------------------------------
-  // Basic key=value
-  // ---------------------------------------------------------------------------
   group('basic key=value', () {
     test('simple string value', () {
       final r = parser.parse('KEY=value');
@@ -41,9 +38,6 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Blank lines and comments
-  // ---------------------------------------------------------------------------
   group('blank lines and comments', () {
     test('blank lines are skipped', () {
       final r = parser.parse('\n\nKEY=value\n\n');
@@ -62,7 +56,6 @@ void main() {
     });
 
     test('inline comment with no space before # is kept', () {
-      // Only ` #` (space + hash) triggers comment stripping
       final r = parser.parse('KEY=value#notacomment');
       expect(r.values['KEY'], 'value#notacomment');
     });
@@ -73,9 +66,6 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // export prefix
-  // ---------------------------------------------------------------------------
   group('export prefix', () {
     test('strips export prefix', () {
       final r = parser.parse('export KEY=value');
@@ -93,9 +83,6 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Double-quoted values
-  // ---------------------------------------------------------------------------
   group('double-quoted values', () {
     test('strips surrounding double quotes', () {
       final r = parser.parse('KEY="hello world"');
@@ -143,9 +130,6 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Single-quoted values
-  // ---------------------------------------------------------------------------
   group('single-quoted values', () {
     test('strips surrounding single quotes', () {
       final r = parser.parse("KEY='hello world'");
@@ -168,9 +152,6 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Multi-line content (multiple entries)
-  // ---------------------------------------------------------------------------
   group('multiple entries', () {
     test('parses multiple key=value lines', () {
       final r = parser.parse('A=1\nB=2\nC=3');
@@ -190,9 +171,6 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Duplicate keys
-  // ---------------------------------------------------------------------------
   group('duplicate keys', () {
     test('last value wins on duplicate key', () {
       final r = parser.parse('KEY=first\nKEY=second');
@@ -211,9 +189,6 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Edge cases
-  // ---------------------------------------------------------------------------
   group('edge cases', () {
     test('empty input returns empty map', () {
       final r = parser.parse('');
