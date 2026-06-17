@@ -1,0 +1,19 @@
+name: fl_env
+description: >-
+  Securely load and access environment variables in Flutter apps.
+  AES-256-GCM encrypted at build time, decrypted natively at runtime.
+version: 0.0.1
+homepage: https://github.com/Sam21-39/fl_env
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
