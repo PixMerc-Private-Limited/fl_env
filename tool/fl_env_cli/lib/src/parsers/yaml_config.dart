@@ -62,12 +62,12 @@ class YamlConfig {
           (e) => MapEntry(e.key as String, e.value as String),
         ),
       ),
-      androidOutputDir: (output['android'] as String?) ?? 'android/app/src/main',
+      androidOutputDir:
+          (output['android'] as String?) ?? 'android/app/src/main',
       iosOutputDir: (output['ios'] as String?) ?? 'ios/Runner',
     );
   }
 
   @override
-  String toString() =>
-      'YamlConfig(defaultEnv: $defaultEnv, tiers: $tiers)';
+  String toString() => 'YamlConfig(defaultEnv: $defaultEnv, tiers: $tiers)';
 }

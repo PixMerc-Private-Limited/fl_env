@@ -24,7 +24,8 @@ class SetupCommand extends Command<void> {
 
     stdout.writeln('fl_env setup complete.');
     stdout.writeln("Edit fl_env.yaml to match your project's .env file paths,");
-    stdout.writeln("then run 'fl_env build' to generate the encrypted registry.");
+    stdout
+        .writeln("then run 'fl_env build' to generate the encrypted registry.");
   }
 
   void _writeYamlScaffold(String root) {

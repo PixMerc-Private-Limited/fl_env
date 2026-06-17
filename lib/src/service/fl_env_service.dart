@@ -47,7 +47,10 @@ class FlEnvService {
   /// For use in tests only. Guarded by [kDebugMode] in production.
   @visibleForTesting
   void reset() {
-    assert(kDebugMode, 'FlEnvService.reset() must only be called in debug mode.');
+    assert(
+      kDebugMode,
+      'FlEnvService.reset() must only be called in debug mode.',
+    );
     _registry = const {};
     _activeEnvironment = 'development';
     _initialized = false;

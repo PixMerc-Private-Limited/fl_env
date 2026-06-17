@@ -57,7 +57,9 @@ void main() {
       expect(entry.cipherWithTag, isNot(equals(plain)));
     });
 
-    test('two encryptions of same plaintext produce different ciphertexts (random nonce)', () {
+    test(
+        'two encryptions of same plaintext produce different ciphertexts (random nonce)',
+        () {
       final plain = Uint8List.fromList(utf8.encode('same value'));
       final e1 = AesGcmEncryptor.encrypt(key, plain);
       final e2 = AesGcmEncryptor.encrypt(key, plain);

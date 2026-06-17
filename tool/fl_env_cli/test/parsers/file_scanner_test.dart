@@ -43,7 +43,10 @@ void main() {
       createFile('.env.staging');
       createFile('.env.production');
       final result = scanner.scan(tempDir.path);
-      expect(result.found.keys, containsAll(['development', 'staging', 'production']));
+      expect(
+        result.found.keys,
+        containsAll(['development', 'staging', 'production']),
+      );
     });
 
     test('ignores non-.env files', () {

@@ -60,10 +60,8 @@ class _KeygenCommand extends Command<void> {
   @override
   Future<void> run() async {
     final rng = Random.secure();
-    final bytes =
-        List<int>.generate(32, (_) => rng.nextInt(256));
-    final hex =
-        bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+    final bytes = List<int>.generate(32, (_) => rng.nextInt(256));
+    final hex = bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
     stdout.writeln(hex);
     stderr.writeln(
       'Copy this key and store it securely (e.g. in your CI secrets):\n'

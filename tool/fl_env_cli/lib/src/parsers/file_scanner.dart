@@ -78,8 +78,7 @@ class FileScanner {
     return ScanResult(found: found, ignored: ignored, warnings: warnings);
   }
 
-  bool _isEnvFile(String name) =>
-      name == '.env' || name.startsWith('.env.');
+  bool _isEnvFile(String name) => name == '.env' || name.startsWith('.env.');
 
   bool _isIgnored(String name) {
     final lower = name.toLowerCase();

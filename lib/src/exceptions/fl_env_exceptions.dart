@@ -26,8 +26,7 @@ abstract class FlEnvException implements Exception {
   final String code;
 
   @override
-  String toString() =>
-      '[$code] $message\n'
+  String toString() => '[$code] $message\n'
       '  Suggestion: $suggestion\n'
       '  Docs: $documentationUrl';
 }
@@ -100,8 +99,7 @@ class FlEnvTypeCastException extends FlEnvException {
     required String targetType,
   }) : super(
           code: 'FL_ENV_E004',
-          message:
-              "Key '$key' has value '$value' which cannot be parsed as "
+          message: "Key '$key' has value '$value' which cannot be parsed as "
               '$targetType.',
           suggestion:
               "Check that the value for '$key' in your .env file is a valid "
@@ -124,8 +122,7 @@ class FlEnvPhaseException extends FlEnvException {
       : super(
           code: 'FL_ENV_E005',
           message: "'$feature' is not available in fl_env 0.1.x (Phase 1).",
-          suggestion:
-              'This capability is planned for fl_env 0.2.0. '
+          suggestion: 'This capability is planned for fl_env 0.2.0. '
               'Subscribe to https://github.com/PixMerc-Private-Limited/fl_env '
               'for release notifications.',
           documentationUrl:
