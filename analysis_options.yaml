@@ -1,6 +1,8 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  exclude:
+    - tool/**
   language:
     strict-raw-types: true
     strict-inference: true
