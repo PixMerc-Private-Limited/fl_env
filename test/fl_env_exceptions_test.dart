@@ -1,7 +1,7 @@
 import 'package:fl_env/src/exceptions/fl_env_exceptions.dart';
 import 'package:fl_env/src/models/fl_env_config.dart';
 import 'package:fl_env/src/models/fl_env_entry.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('FlEnvException hierarchy', () {

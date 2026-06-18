@@ -1,9 +1,14 @@
-# The CLI tool is a separate package; exclude it from the published fl_env package.
-# Consumers install fl_env; they run the CLI separately via dart run tool/fl_env_cli.
-tool/fl_env_cli/
-
 # Development tooling
-tool/generate_test_key.dart
-
-# Architecture decision records — useful in the repo but not on pub.dev
+tool/
 doc/
+
+# Compiled artifacts and Dart build cache — not needed by consumers
+build/
+
+# Generated Android files that are not part of the plugin module
+android/app/
+android/local.properties
+
+# Flutter-generated iOS files (xcconfig, ephemeral scripts, plugin registrant stubs)
+ios/Flutter/
+ios/Runner/

@@ -13,16 +13,17 @@ Secure, encrypted environment variables for Flutter. `.env` files are encrypted 
 ```
 Your machine / CI
   .env.development  ─┐
-  .env.staging      ─┤──▶  fl_env build  ──▶  FlEnvRegistry.bin   ← commit this (ciphertext only)
-  .env.production   ─┘          │
-                                └──────────────▶  FlEnvKey.kt/.swift  ← gitignore this (never commit)
+  .env.staging      ─┤──▶  fl_env build  ──▶  fl_env_registry.bin  ← commit (ciphertext)
+  .env.production   ─┘          │             FlEnvRegistry.bin
+                                └──────────── fl_env_key.bin        ← gitignore (key)
+                                              FlEnvKey.bin
 
 Device at runtime
-  FlEnvRegistry.bin + FlEnvKey  ──▶  AES-256-GCM decrypt  ──▶  FlEnvService.get('KEY')
+  *Registry.bin + *Key.bin  ──▶  AES-256-GCM decrypt  ──▶  FlEnvService.get('KEY')
 ```
 
 - **Master key** (`FL_ENV_MASTER_KEY`) — lives only in CI secrets and developer machines. Never in the repo.
-- **Derived AES key** — embedded in the native binary at compile time as a gitignored source file.
+- **Derived AES key** — written to the consumer's native app module as a gitignored binary resource (`fl_env_key.bin` / `FlEnvKey.bin`). Embedded in the compiled binary; not accessible from the plugin's own source.
 - **Registry** — encrypted values committed to the repo. Safe to commit; useless without the key.
 
 ---
@@ -49,32 +50,31 @@ dependencies:
 
 ## Quick start
 
-### 1 — Generate a master key
+### 1 — Scaffold the config
 
-```sh
-openssl rand -hex 32
-# Prints a 64-character hex string — this is your FL_ENV_MASTER_KEY
-```
-
-**Store this key in your CI secrets** (`Settings → Secrets → Actions → FL_ENV_MASTER_KEY`). Never commit it.
-
-### 2 — Scaffold the config
-
-Run from your project root:
+Run from your Flutter project root:
 
 ```sh
 dart run fl_env setup
 ```
 
-This creates `fl_env.yaml` and appends the required `.gitignore` entries automatically.
+This creates `fl_env.yaml`, appends `.gitignore` entries, and installs the iOS Podfile hook that adds the binary resources to Xcode's Copy Bundle Resources phase automatically.
+
+### 2 — Generate a master key
+
+```sh
+export FL_ENV_MASTER_KEY=$(dart run fl_env keygen)
+```
+
+Store this value in your CI secrets (`Settings → Secrets → Actions → FL_ENV_MASTER_KEY`). Never commit it.
 
 ### 3 — Edit `fl_env.yaml`
 
-The scaffold creates a starting point — edit the paths to match your project layout:
+The scaffold creates a starting point — edit to match your project:
 
 ```yaml
 fl_env:
-  default_env: development       # active tier at runtime
+  default_env: development
   output:
     android: android/app/src/main
     ios: ios/Runner
@@ -82,6 +82,12 @@ fl_env:
     development: .env
     staging:     .env.staging
     production:  .env.production
+  required_keys:
+    - API_URL
+    - API_KEY
+  key_types:
+    TIMEOUT: int
+    DEBUG: bool
 ```
 
 See the [fl_env.yaml reference](#fl_envyaml-reference) below for all options.
@@ -111,25 +117,27 @@ TAGS=flutter,dart,dev
 ### 5 — Build the encrypted registry
 
 ```sh
-FL_ENV_MASTER_KEY=<your-key> dart run fl_env build
+dart run fl_env build
 ```
 
-This writes four files:
+This writes four files into your consumer app's own directories:
 
 | File | Destination | Commit? |
 |------|-------------|:-------:|
-| `fl_env_registry.bin` | `android/…/res/raw/` | ✅ yes |
-| `FlEnvKey.kt` | `android/…/generated/` | ❌ no |
-| `FlEnvRegistry.bin` | `ios/…/Resources/` | ✅ yes |
-| `FlEnvKey.swift` | `ios/…/Generated/` | ❌ no |
+| `fl_env_key.bin` | `android/app/src/main/res/raw/` | ❌ no |
+| `fl_env_registry.bin` | `android/app/src/main/res/raw/` | ✅ yes |
+| `FlEnvKey.bin` | `ios/Runner/` | ❌ no |
+| `FlEnvRegistry.bin` | `ios/Runner/` | ✅ yes |
 
-> **iOS note:** Add `FlEnvRegistry.bin` to your Xcode target once — open Xcode, select the Runner target → Build Phases → Copy Bundle Resources → `+` → select the file.
+### 6 — iOS: run pod install
 
-> **Before first build:** The repo ships placeholder `FlEnvKey.kt` / `FlEnvKey.swift` stubs with empty bytes so the project compiles immediately after cloning. Without a real master key the app will show an error card at runtime explaining what to do. Run `fl_env build` to replace the stubs with the real derived key.
+```sh
+cd ios && pod install
+```
 
-Re-run `fl_env build` whenever any `.env` file changes.
+The Podfile hook installed by `fl_env setup` adds `FlEnvKey.bin` and `FlEnvRegistry.bin` to Xcode's Copy Bundle Resources phase automatically. This only needs to happen once (or after a fresh clone).
 
-### 6 — Initialize in Dart
+### 7 — Initialize in Dart
 
 ```dart
 // main.dart
@@ -160,8 +168,8 @@ fl_env:
   default_env: development     # tier name to load at runtime
 
   output:
-    # Paths are relative to fl_env.yaml (usually your project root).
-    # fl_env build writes FlEnvKey + registry into these directories.
+    # Paths relative to fl_env.yaml (your project root).
+    # fl_env build writes key + registry into these directories.
     android: android/app/src/main
     ios: ios/Runner
 
@@ -170,9 +178,28 @@ fl_env:
     development: .env
     staging:     .env.staging
     production:  .env.production
-```
 
-All tiers are encrypted and bundled into the registry. The `default_env` value selects which tier is loaded at runtime.
+  # Optional: every listed key must be present in every tier's .env file.
+  # fl_env check exits 1 if any are missing.
+  required_keys:
+    - API_URL
+    - API_KEY
+
+  # Optional: declare the expected type for specific keys.
+  # fl_env check verifies the value is coercible before a build.
+  # Supported types: string (default), int, double, bool, uri, list
+  key_types:
+    TIMEOUT: int
+    DEBUG: bool
+    API_URL: uri
+
+  # Optional: keys whose values are redacted in fl_env inspect output.
+  # Defaults: SECRET, KEY, TOKEN, PASSWORD, PRIVATE, CREDENTIAL, AUTH
+  sensitive_key_patterns:
+    - SECRET
+    - KEY
+    - TOKEN
+```
 
 ---
 
@@ -182,10 +209,12 @@ All commands accept `--project <path>` to target a directory other than the curr
 
 | Command | What it does |
 |---------|-------------|
-| `fl_env setup` | Writes a `fl_env.yaml` scaffold and updates `.gitignore` |
-| `fl_env build` | Encrypts all tiers, writes registry + key files |
+| `fl_env setup` | Writes `fl_env.yaml`, updates `.gitignore`, installs iOS Podfile hook |
+| `fl_env keygen` | Prints a fresh 64-char hex master key to stdout |
+| `fl_env build [--env=<name>]` | Encrypts all tiers, writes registry + key binary files |
+| `fl_env inspect [--env=<name>]` | Prints Tier 1 key-value pairs from the `.env` file; redacts sensitive values |
 | `fl_env scan` | Lists discovered `.env` files and their resolved tier names |
-| `fl_env check` | Exits 1 if any `.env` has changed since the last build (use as a CI gate) |
+| `fl_env check` | Detects drift, validates required_keys and key_types; exits 1 on failure (CI gate) |
 
 ---
 
@@ -223,7 +252,7 @@ Use `FlEnvFakeChannel` to bypass the native layer in unit tests:
 
 ```dart
 import 'package:fl_env/fl_env.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   setUp(() async {
@@ -270,7 +299,7 @@ Add these steps **before** the native build step:
   run: dart run fl_env check
 ```
 
-`fl_env check` exits 1 if any `.env` file has changed since the last `fl_env build` — a reliable gate that catches stale registries before a native build wastes several minutes.
+`fl_env check` exits 1 if any `.env` file has changed since the last `fl_env build`, or if any `required_keys` are missing, or if any `key_types` values are not coercible — a reliable gate that catches misconfiguration before a native build wastes several minutes.
 
 Add `FL_ENV_MASTER_KEY` to your repository secrets: **Settings → Secrets → Actions → New repository secret**.
 
@@ -286,7 +315,7 @@ Add `FL_ENV_MASTER_KEY` to your repository secrets: **Settings → Secrets → A
 | `FL_ENV_E004` | `FlEnvTypeCastException` | Value cannot be parsed to the requested type |
 | `FL_ENV_E005` | `FlEnvPhaseException` | `switchEnvironment()` called (Phase 2 only) |
 
-All exceptions extend `FlEnvException` and expose a `message`, `suggestion`, and `code`.
+All exceptions extend `FlEnvException` and expose `message`, `suggestion`, `code`, and `documentationUrl` (pointing to `https://fl-env.pixmerc.com/errors/<code>`).
 
 ---
 
@@ -294,12 +323,12 @@ All exceptions extend `FlEnvException` and expose a `message`, `suggestion`, and
 
 | Aspect | Detail |
 |--------|--------|
-| Encryption | AES-256-GCM per value |
+| Encryption | AES-256-GCM per value, unique 12-byte nonce per entry |
 | Key derivation | HKDF-SHA256 with info `"fl_env v1"` (domain separation) |
 | Master key | CI secrets + developer machine only — never committed |
-| Derived key (Phase 1) | Gitignored native source file, embedded in the compiled binary |
+| Derived key (Phase 1) | Gitignored binary resource in consumer app module (`fl_env_key.bin` / `FlEnvKey.bin`), embedded in compiled binary |
 | Derived key (Phase 2) | Android Keystore / iOS Secure Enclave migration (planned) |
-| Registry | Ciphertext committed to repo — safe because decryption requires the key file |
+| Registry | Ciphertext committed to repo — safe because decryption requires the key |
 
 ---
 
@@ -308,12 +337,14 @@ All exceptions extend `FlEnvException` and expose a `message`, `suggestion`, and
 `fl_env setup` appends these automatically. If you prefer to add them manually:
 
 ```gitignore
-# fl_env — generated files, never commit
-**/com/pixmerc/fl_env/generated/FlEnvKey.kt
-**/Generated/FlEnvKey.swift
-**/res/raw/fl_env_registry.bin
-**/Resources/FlEnvRegistry.bin
-.fl_env_web_defines
+# fl_env generated files — do not commit
+android/app/src/main/res/raw/fl_env_key.bin
+android/app/src/main/res/raw/fl_env_registry.bin
+ios/Runner/FlEnvKey.bin
+ios/Runner/FlEnvRegistry.bin
+
+# Lockfile (tracks .env hashes for drift detection)
+.fl_env.lock
 
 # Source .env files — commit only *.example templates
 .env
