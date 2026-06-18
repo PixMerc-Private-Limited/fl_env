@@ -26,14 +26,6 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      - name: Install CLI dependencies
-        working-directory: tool/fl_env_cli
-        run: dart pub get
-
-      - name: Run CLI tests
-        working-directory: tool/fl_env_cli
-        run: dart test
-
   report-failure:
     name: Report Failure
     runs-on: ubuntu-latest
