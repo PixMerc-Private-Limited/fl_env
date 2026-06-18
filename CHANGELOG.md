@@ -1,3 +1,8 @@
+## 0.1.1
+
+- Widen `pointycastle` constraint to `>=3.9.0 <5.0.0` to support v4.x
+- Update homepage URL to GitHub repository
+
 ## 0.1.0
 
 ### New features
