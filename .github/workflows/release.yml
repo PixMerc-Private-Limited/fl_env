@@ -1,0 +1,98 @@
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  validate:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.0'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Verify tag is on main
+        run: |
+          git fetch origin main --depth=50
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tag must be created from the main branch"
+            exit 1
+          fi
+          echo "Tag is on main — proceeding"
+
+      - name: Verify tag matches pubspec version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          PUBSPEC=$(grep "^version:" pubspec.yaml | awk '{print $2}')
+          if [ "$TAG" != "$PUBSPEC" ]; then
+            echo "::error::Tag $TAG does not match pubspec version $PUBSPEC"
+            exit 1
+          fi
+          echo "Version check passed: $TAG == $PUBSPEC"
+
+      - name: Verify CHANGELOG entry exists
+        run: |
+          VER="${GITHUB_REF#refs/tags/v}"
+          if ! grep -q "^## ${VER}" CHANGELOG.md; then
+            echo "::error::No CHANGELOG entry found for version ${VER}"
+            exit 1
+          fi
+          echo "CHANGELOG entry found for ${VER}"
+
+      - name: pub.dev dry run
+        run: dart pub publish --dry-run
+
+  github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: validate
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract CHANGELOG entry
+        id: changelog
+        run: |
+          VER="${GITHUB_REF#refs/tags/v}"
+          BODY=$(awk "/^## ${VER}/{found=1;next} found && /^## /{exit} found{print}" CHANGELOG.md)
+          {
+            echo "BODY<<EOF"
+            echo "$BODY"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.BODY }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
+
+  publish:
+    name: Publish to pub.dev
+    needs: github-release
+    permissions:
+      id-token: write # Required for authentication using OIDC
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    # with:
+    #   working-directory: path/to/package/within/repository

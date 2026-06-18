@@ -1,0 +1,13 @@
+# All files — core team review required
+*                       @PixMerc-Private-Limited/core
+
+# Native layers — requires native expertise
+/android/               @PixMerc-Private-Limited/core
+/ios/                   @PixMerc-Private-Limited/core
+
+# CI/CD — requires infrastructure expertise
+/.github/               @PixMerc-Private-Limited/core
+
+# Docs and example — open to contributors
+/docs/                  @PixMerc-Private-Limited/core @PixMerc-Private-Limited/contributors
+/example/               @PixMerc-Private-Limited/core @PixMerc-Private-Limited/contributors

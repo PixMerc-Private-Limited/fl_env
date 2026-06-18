@@ -1,0 +1,37 @@
+name: Main
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish-dry-run:
+    name: pub.dev Dry Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.0'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart pub publish --dry-run
+
+  coverage:
+    name: Coverage Upload
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.0'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter test --coverage
+      - uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+          flags: main
+          token: ${{ secrets.CODECOV_TOKEN }}

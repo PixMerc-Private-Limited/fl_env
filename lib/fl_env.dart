@@ -1,6 +1,10 @@
 /// fl_env — Secure environment variable management for Flutter.
-///
-/// This is a placeholder release (0.0.1). The full implementation
-/// ships in 0.1.0 with AES-256-GCM encryption, native Android/iOS
-/// decryption, and typed Dart accessors.
 library;
+
+export 'package:fl_env/src/channel/fl_env_channel.dart'
+    show FlEnvChannel, FlEnvChannelBase;
+export 'package:fl_env/src/exceptions/fl_env_exceptions.dart';
+export 'package:fl_env/src/models/fl_env_config.dart';
+export 'package:fl_env/src/models/fl_env_entry.dart';
+export 'package:fl_env/src/service/fl_env_service.dart';
+export 'package:fl_env/src/testing/fl_env_fake.dart';

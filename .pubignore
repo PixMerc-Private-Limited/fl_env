@@ -1,6 +1,14 @@
-android/
-ios/
+# Development tooling
 tool/
 doc/
-example/
+
+# Compiled artifacts and Dart build cache — not needed by consumers
 build/
+
+# Generated Android files that are not part of the plugin module
+android/app/
+android/local.properties
+
+# Flutter-generated iOS files (xcconfig, ephemeral scripts, plugin registrant stubs)
+ios/Flutter/
+ios/Runner/

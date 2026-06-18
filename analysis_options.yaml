@@ -1,0 +1,19 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-raw-types: true
+    strict-inference: true
+    strict-casts: true
+  errors:
+    missing_required_param: error
+    missing_return: error
+
+linter:
+  rules:
+    - public_member_api_docs
+    - require_trailing_commas
+    - always_use_package_imports
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - sort_pub_dependencies

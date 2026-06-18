@@ -1,0 +1,19 @@
+fl_env:
+  default_env: development
+  output:
+    android: android/app/src/main
+    ios: ios/Runner
+  tiers:
+    development: .env
+    staging: .env.staging
+    production: .env.production
+  required_keys:
+    - API_URL
+    - API_KEY
+    - TIMEOUT
+    - DEBUG
+    - TAGS
+    - BACKEND_URL
+  key_types:
+    TIMEOUT: int
+    DEBUG: bool
