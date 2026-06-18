@@ -3,10 +3,10 @@ description: >-
   Secure environment variable management for Flutter.
   CLI-encrypted .env files, decrypted natively at runtime — no plaintext
   at rest in the compiled binary.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/PixMerc-Private-Limited/fl_env
 issue_tracker: https://github.com/PixMerc-Private-Limited/fl_env/issues
-homepage: https://fl-env.pixmerc.com
+homepage: https://github.com/PixMerc-Private-Limited/fl_env
 
 topics:
   - environment
@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   path: ^1.9.0
   plugin_platform_interface: ^2.0.2
-  pointycastle: ^3.9.0
+  pointycastle: '>=3.9.0 <5.0.0'
   yaml: ^3.1.0
 
 dev_dependencies:
